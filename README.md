@@ -631,7 +631,21 @@ Export the existing `login.html` and `provider.html`:
 Choose an image ewhich you'd like to use for the replacement. Encode the the image into `base64`. [Base64 Guru](https://base64.guru/converter/encode/image) helps.
 
 Replace the base64 value in the `login.html`. Search for `background-image:url(data:image/`, pay attention to the file format (png, svg, jpg), adjust it if necessary and replace the base64 value of the image.
+---
+Fix to make Background on login page Stretched to Full Screen:
+---
+Path for the base64 encoded image in the login.htm is located underl:-
+Search for :
+.pf-v6-c-background-image { background: url("PASTE THE ENCODED IMAGE HERE")
 
+Then patch only the CSS in the new login.html
+
+#sed -i '/</head>/i\
+<style>\ .pf-v6-c-background-image {\ background-position: center center !important;\ background-size: cover !important;\ }\ </style>' login.html
+----
+Remove old configmap
+oc delete secret login-template -n openshift-config
+oc create secret generic login-template --from-file=login.html -n openshift-config
 Create the secrets:
 
 ```code
